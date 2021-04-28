@@ -6,17 +6,23 @@ class UserModel {
   String displayName;
   String photoURL;
   String bio;
+  bool verified;
 
-  UserModel(this.uid, {required this.displayName, required this.photoURL, required this.bio});
+  UserModel(this.uid,
+      {required this.displayName,
+      required this.photoURL,
+      required this.bio,
+      required this.verified});
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data()!;
 
     return UserModel(
-        doc.id,
-        displayName: data['displayName'] ?? '',
-        photoURL: data['photoURL'] ?? '',
-        bio: data['bio'] ?? 'I love food!',
+      doc.id,
+      displayName: data['displayName'] ?? '',
+      photoURL: data['photoURL'] ?? '',
+      bio: data['bio'] ?? 'I love food!',
+      verified: data['verified'] ?? false,
     );
   }
 }

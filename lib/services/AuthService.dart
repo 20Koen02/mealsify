@@ -35,18 +35,21 @@ class AuthService {
     return firebaseApp;
   }
 
-  Future<void> addUserToFirestore(User user) {
-    CollectionReference userCollection =
-        FirebaseFirestore.instance.collection('users');
-    return userCollection
-        .doc(user.uid)
-        .set({
-          'uid': user.uid,
-          'displayName': user.displayName,
-          'photoURL': user.photoURL
-        }, SetOptions(merge: true))
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+  Future<void> addUserToFirestore(User user) async {
+    CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
+    var firestoreDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+
+    if (firestoreDoc.data() == null) {
+      print("Creating User in Firestore");
+      userCollection
+          .doc(user.uid)
+          .set({
+        'displayName': user.displayName,
+        'photoURL': user.photoURL
+      }, SetOptions(merge: true))
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
+    }
   }
 
   Future<User?> signInWithGoogle({required BuildContext context}) async {

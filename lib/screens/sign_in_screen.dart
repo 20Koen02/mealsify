@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mealsify/res/custom_colors.dart';
 import 'package:mealsify/services/AuthService.dart';
 import 'package:mealsify/widgets/google_sign_in_button.dart';
 import 'package:mealsify/locator.dart';
@@ -61,7 +60,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   }
                   return CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      CustomColors.firebaseOrange,
+                      Colors.amber,
                     ),
                   );
                 },
