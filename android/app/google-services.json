@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "585367217663",
+    "project_id": "mealsify-b53f0",
+    "storage_bucket": "mealsify-b53f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585367217663:android:56d740648ddd644526f3ca",
+        "android_client_info": {
+          "package_name": "nl.koen02.mealsify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "585367217663-3it8bgnpdnsg1vks84kp2hi4feua2blh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "nl.koen02.mealsify",
+            "certificate_hash": "e258e1cbf7c04fe378cbde3461ec0f2ed1b0dfd8"
+          }
+        },
+        {
+          "client_id": "585367217663-mnc6cqtlsat7vgia6gror3epegl8fvs3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDf4K_bPEq1EKtImSqopkWVhs5KQI5rcTw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585367217663-mnc6cqtlsat7vgia6gror3epegl8fvs3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
