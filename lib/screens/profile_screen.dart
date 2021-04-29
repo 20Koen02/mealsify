@@ -1,13 +1,10 @@
-import 'dart:math';
-
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:mealsify/models/RecipeModel.dart';
 import 'package:mealsify/models/UserModel.dart';
-import 'package:mealsify/services/UserService.dart';
-import 'package:mealsify/util/repeat_list.dart';
-import 'package:mealsify/widgets/big_recipe_card.dart';
-
-import '../constants.dart';
+import 'package:mealsify/controllers/RecipeController.dart';
+import 'package:mealsify/controllers/UserController.dart';
+import 'package:mealsify/screens/recipe_screen.dart';
 import '../locator.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -16,7 +13,9 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  List _recipes = [];
+  List<RecipeModel>? _recipes = locator.get<RecipeController>().getTopRecipes;
+  UserModel? currentUser = locator.get<UserController>().currentUser;
+
 
   @override
   void initState() {
@@ -25,9 +24,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void fetchRecipes() async {
-    setState(() {
-      _recipes = testRecipes;
-    });
+    if (currentUser != null) {
+      await locator.get<RecipeController>().loadMyRecipes(currentUser!.uid);
+      setState(() {
+        _recipes = locator.get<RecipeController>().getMyRecipes;
+      });
+    }
   }
 
   Future<void> _getData() async {
@@ -38,7 +40,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel? currentUser = locator.get<UserService>().currentUser;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -73,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: Color(0x4d3a2318),
                             child: currentUser != null
                                 ? Image.network(
-                                    currentUser.photoURL,
+                                    currentUser!.photoURL,
                                     height: 120,
                                     fit: BoxFit.fitHeight,
                                   )
@@ -155,27 +156,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child: _recipes.length != 0
+                        child: _recipes != null
                             ? RefreshIndicator(
                                 onRefresh: _getData,
                                 child: GridView.count(
                                   crossAxisCount: 3,
-                                  children: List.generate(_recipes.length, (index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(5),
+                                  children: List.generate(_recipes!.length, (index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => RecipeScreen(
+                                                  recipe: _recipes![index])),
+                                        );
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(5),
+                                            ),
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                  _recipes![index].image),
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                                _recipes[index].image),
-                                            fit: BoxFit.cover,
+                                          child: Column(
+                                            children: [],
                                           ),
-                                        ),
-                                        child: Column(
-                                          children: [],
                                         ),
                                       ),
                                     );

@@ -27,9 +27,15 @@ dependencies:
   eva_icons_flutter:
   provider:
   get_it:
+  flutter_form_builder:
+  form_builder_image_picker:
+  image_picker:
 
   # FIREBASE
   firebase_core:
+
+  # Storage
+  firebase_storage:
 
   # DB
   cloud_firestore:

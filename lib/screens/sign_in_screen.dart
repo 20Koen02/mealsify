@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mealsify/services/AuthService.dart';
+import 'package:mealsify/controllers/AuthController.dart';
 import 'package:mealsify/widgets/google_sign_in_button.dart';
 import 'package:mealsify/locator.dart';
 
@@ -9,7 +9,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  AuthService _authService = locator.get<AuthService>();
+  AuthController _authController = locator.get<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               FutureBuilder(
-                future: _authService.initializeFirebase(context: context),
+                future: _authController.initializeFirebase(context: context),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Text('Error initializing Firebase');

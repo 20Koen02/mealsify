@@ -31,7 +31,7 @@ void main() async {
 
   await Firebase.initializeApp();
 
-  setupServices();
+  setupControllers();
 
   runZonedGuarded(() {
     runApp(MyApp());

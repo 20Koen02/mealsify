@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mealsify/screens/get_started_screen.dart';
-import 'package:mealsify/services/AuthService.dart';
+import 'package:mealsify/controllers/AuthController.dart';
 import 'package:mealsify/locator.dart';
 
 class GoogleSignInButton extends StatefulWidget {
@@ -12,7 +12,7 @@ class GoogleSignInButton extends StatefulWidget {
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
   bool _isSigningIn = false;
 
-  AuthService _authService = locator.get<AuthService>();
+  AuthController _authController = locator.get<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             _isSigningIn = true;
           });
           User? user =
-          await _authService.signInWithGoogle(context: context);
+          await _authController.signInWithGoogle(context: context);
 
           setState(() {
             _isSigningIn = false;

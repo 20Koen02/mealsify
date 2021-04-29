@@ -1,10 +1,14 @@
+import 'dart:math';
+
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mealsify/util/repeat_list.dart';
+import 'package:mealsify/models/RecipeModel.dart';
+import 'package:mealsify/controllers/RecipeController.dart';
+import 'package:mealsify/screens/recipe_screen.dart';
 import 'package:mealsify/widgets/home_recipe_card.dart';
 
-import '../constants.dart';
+import '../locator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -21,6 +25,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Function _onItemTapped;
+  List<RecipeModel>? _topRecipes =
+      locator.get<RecipeController>().getTopRecipes;
 
   @override
   void initState() {
@@ -53,9 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 24.0, vertical: 10.0),
                 child: Container(
-                  child: ListView(
-                    physics: BouncingScrollPhysics(),
+                  child: Column(
                     children: [
+                      SizedBox(
+                        height: 50.0,
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6.0),
                         child: Row(
@@ -98,67 +106,39 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 14.0),
-                        child: Container(
-                          height: 400.0,
-                          child: ListView.separated(
-                            physics: BouncingScrollPhysics(),
-                            itemCount: 10,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, position) {
-                              final recipe =
-                                  repeatRecipes(testRecipes, position);
-                              return HomeRecipeCard(
-                                image: recipe.image,
-                                title: recipe.title,
-                                timeToPrep: recipe.timeToPrep,
-                              );
-                            },
-                            separatorBuilder: (context, position) {
-                              return SizedBox(width: 14.0);
-                            },
+                      if (_topRecipes != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 14.0),
+                          child: Container(
+                            height: 400.0,
+                            child: ListView.separated(
+                              physics: BouncingScrollPhysics(),
+                              itemCount: min(_topRecipes!.length, 10),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, position) {
+                                final recipe = _topRecipes![position];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              RecipeScreen(recipe: recipe)),
+                                    );
+                                  },
+                                  child: HomeRecipeCard(
+                                    image: recipe.image,
+                                    title: recipe.title,
+                                    timeToPrep: recipe.timeToPrep,
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, position) {
+                                return SizedBox(width: 14.0);
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 30.0,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                        child: Text(
-                          "Editors' Choice",
-                          style: TextStyle(
-                            color: Color(0xFF3a2318),
-                            fontSize: 18,
-                            height: 1.2,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 14.0),
-                        child: Container(
-                          height: 400.0,
-                          child: ListView.separated(
-                            physics: BouncingScrollPhysics(),
-                            itemCount: 5,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, position) {
-                              final recipe =
-                                  repeatRecipes(testRecipes, position + 1);
-                              return HomeRecipeCard(
-                                image: recipe.image,
-                                title: recipe.title,
-                                timeToPrep: recipe.timeToPrep,
-                              );
-                            },
-                            separatorBuilder: (context, position) {
-                              return SizedBox(width: 14.0);
-                            },
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),

@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mealsify/locator.dart';
 import 'package:mealsify/models/UserModel.dart';
 import 'package:mealsify/screens/add_screen.dart';
 import 'package:mealsify/screens/profile_screen.dart';
 import 'package:mealsify/screens/search_screen.dart';
-import 'package:mealsify/services/UserService.dart';
+import 'package:mealsify/controllers/UserController.dart';
 import 'home_screen.dart';
 
 class PageLoader extends StatefulWidget {
@@ -26,7 +27,9 @@ class _PageLoaderState extends State<PageLoader> {
       onItemTapped: _onItemTapped,
     ),
     SearchScreen(),
-    AddScreen(),
+    AddScreen(
+      onItemTapped: _onItemTapped,
+    ),
     ProfileScreen(),
   ];
 
@@ -43,9 +46,10 @@ class _PageLoaderState extends State<PageLoader> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel? currentUser = locator.get<UserService>().currentUser;
+    UserModel? currentUser = locator.get<UserController>().currentUser;
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: Padding(

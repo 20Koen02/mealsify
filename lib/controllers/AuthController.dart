@@ -6,7 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mealsify/models/UserModel.dart';
 import 'package:mealsify/screens/page_loader.dart';
 
-class AuthService {
+class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   static SnackBar customSnackBar({required String content}) {
@@ -78,21 +78,21 @@ class AuthService {
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
           ScaffoldMessenger.of(context).showSnackBar(
-            AuthService.customSnackBar(
+            AuthController.customSnackBar(
               content:
                   'An account already exists with the same email address but different sign-in credentials.',
             ),
           );
         } else if (e.code == 'invalid-credential') {
           ScaffoldMessenger.of(context).showSnackBar(
-            AuthService.customSnackBar(
+            AuthController.customSnackBar(
               content: 'Error occurred while accessing credentials. Try again.',
             ),
           );
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          AuthService.customSnackBar(
+          AuthController.customSnackBar(
             content: 'Error occurred using Google Sign-In. Try again.',
           ),
         );
@@ -107,7 +107,7 @@ class AuthService {
       await _auth.signOut();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        AuthService.customSnackBar(
+        AuthController.customSnackBar(
           content: 'Error signing out. Try again.',
         ),
       );
