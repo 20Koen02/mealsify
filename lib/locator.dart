@@ -8,7 +8,7 @@ import 'controllers/UserController.dart';
 final locator = GetIt.instance;
 
 void setupControllers() {
+  locator.registerSingleton<UserController>(UserController());
   locator.registerSingleton<AuthController>(AuthController());
   locator.registerSingleton<RecipeController>(RecipeController());
-  locator.registerSingleton<UserController>(UserController());
 }

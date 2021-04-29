@@ -1,5 +1,6 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:mealsify/controllers/AuthController.dart';
 import 'package:mealsify/models/RecipeModel.dart';
 import 'package:mealsify/models/UserModel.dart';
 import 'package:mealsify/controllers/RecipeController.dart';
@@ -13,9 +14,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  List<RecipeModel>? _recipes = locator.get<RecipeController>().getTopRecipes;
+  List<RecipeModel>? _recipes = locator.get<RecipeController>().getMyRecipes;
   UserModel? currentUser = locator.get<UserController>().currentUser;
-
 
   @override
   void initState() {
@@ -40,7 +40,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -53,21 +52,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   delegate: SliverChildListDelegate([
                     Column(
                       children: [
-                        // TODO: Edit Profile
-                        // Padding(
-                        //   padding: const EdgeInsets.all(15.0),
-                        //   child: Row(
-                        //     mainAxisAlignment: MainAxisAlignment.end,
-                        //     children: [
-                        //       Icon(
-                        //         EvaIcons.editOutline,
-                        //         size: 30,
-                        //         color: Color(0xFF3a2318),
-                        //       )
-                        //     ],
-                        //   ),
-                        // ),
-                        SizedBox(height: 60.0),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  EvaIcons.logOutOutline,
+                                  size: 30,
+                                  color: Color(0xFF3a2318),
+                                ),
+                                onPressed: () {
+                                  locator.get<AuthController>().signOut(context: context);
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                        // SizedBox(height: 60.0),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(40.0),
                           child: Material(
@@ -161,14 +164,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 onRefresh: _getData,
                                 child: GridView.count(
                                   crossAxisCount: 3,
-                                  children: List.generate(_recipes!.length, (index) {
+                                  children:
+                                      List.generate(_recipes!.length, (index) {
                                     return GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => RecipeScreen(
-                                                  recipe: _recipes![index])),
+                                              builder: (context) =>
+                                                  RecipeScreen(
+                                                      recipe:
+                                                          _recipes![index])),
                                         );
                                       },
                                       child: Padding(

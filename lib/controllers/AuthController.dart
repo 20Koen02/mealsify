@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mealsify/models/UserModel.dart';
 import 'package:mealsify/screens/page_loader.dart';
+import 'package:mealsify/screens/sign_in_screen.dart';
+
+import '../locator.dart';
+import 'UserController.dart';
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -27,6 +31,12 @@ class AuthController {
     User? user = _auth.currentUser;
 
     if (user != null) {
+      var firestoreDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      locator.get<UserController>().setCurrentUser(firestoreDoc);
+
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => PageLoader()),
       );
@@ -36,20 +46,28 @@ class AuthController {
   }
 
   Future<void> addUserToFirestore(User user) async {
-    CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
-    var firestoreDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    CollectionReference userCollection =
+        FirebaseFirestore.instance.collection('users');
+    var firestoreDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
 
     if (firestoreDoc.data() == null) {
       print("Creating User in Firestore");
-      userCollection
+      await userCollection
           .doc(user.uid)
-          .set({
-        'displayName': user.displayName,
-        'photoURL': user.photoURL
-      }, SetOptions(merge: true))
+          .set({'displayName': user.displayName, 'photoURL': user.photoURL},
+              SetOptions(merge: true))
           .then((value) => print("User Added"))
           .catchError((error) => print("Failed to add user: $error"));
     }
+
+    firestoreDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+    locator.get<UserController>().setCurrentUser(firestoreDoc);
   }
 
   Future<User?> signInWithGoogle({required BuildContext context}) async {
@@ -105,6 +123,9 @@ class AuthController {
   Future<void> signOut({required BuildContext context}) async {
     try {
       await _auth.signOut();
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => SignInScreen()),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         AuthController.customSnackBar(
